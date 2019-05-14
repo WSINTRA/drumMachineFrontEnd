@@ -5,6 +5,8 @@ Drum machine that uses webGL, built for MOd 3 prject at Flatiron school.
 Drum machine connects to an API, built in rails and collects drum sounds and connects them into a drum kit.
 In the background there is a space scene with 8 spheres to represent each drum pad, this uses the THREE.JS framework.
 
+
+
 MVP was to make the drumkit work.
 Push goals-
            Add a create drumkit button
@@ -16,3 +18,5 @@ By
 Bryan Ryu
 &
 Will Simpson
+
+![Image description](https://i.imgur.com/YANWw6C.png)
