@@ -1,4 +1,4 @@
-# drumMachineFrontEnd
+# DrumMash'N FrontEnd
 
 Slow working version here. Allow time for heroku backend to fire up.
 https://wsintra.github.io/drumMachineFrontEnd/
