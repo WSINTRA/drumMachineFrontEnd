@@ -2,6 +2,9 @@
 
 Slow working version here. Allow time for heroku backend to fire up.
 https://wsintra.github.io/drumMachineFrontEnd/
+Once it is working you can click on the title and the available kits should appear or you can create a new one using sound sample URL's.
+
+
 Front end for Drum Machine project
 Drum machine that uses webGL, built for MOd 3 prject at Flatiron school.
 
