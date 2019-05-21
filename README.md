@@ -1,4 +1,7 @@
 # drumMachineFrontEnd
+
+Slow working version here. Allow time for heroku backend to fire up.
+https://wsintra.github.io/drumMachineFrontEnd/
 Front end for Drum Machine project
 Drum machine that uses webGL, built for MOd 3 prject at Flatiron school.
 
