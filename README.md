@@ -6,7 +6,7 @@ Once it is working you can click on the title and the available kits should appe
 
 
 Front end for Drum Machine project
-Drum machine that uses webGL, built for MOd 3 prject at Flatiron school.
+Drum machine that uses webGL, built for mod 3 prject at Flatiron school.
 
 Drum machine connects to an API, built in rails and collects drum sounds and connects them into a drum kit.
 In the background there is a space scene with 8 spheres to represent each drum pad, this uses the THREE.JS framework.
