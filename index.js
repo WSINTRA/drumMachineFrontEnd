@@ -1,5 +1,13 @@
-// OPENING TEXT ANIMATION JS ******************************************************************************
 const numberOfDrumPads = 8;
+const dropDownDiv = document.querySelector('div.dropdown-content');
+const dropDownTag = document.querySelector('.dropdown-content')
+const padClassTag = document.querySelector('.pad')
+const soundModal = document.getElementById('soundModal');
+const kitModal = document.getElementById('kitModal');
+const soundBtn = document.getElementById("addSoundBtn");
+const kitBtn = document.getElementById("createKitBtn");
+const soundSpan = document.getElementById("soundSpan");
+const kitSpan = document.getElementById("kitSpan");
 
 anime.timeline({loop: false})
   .add({
@@ -10,76 +18,59 @@ anime.timeline({loop: false})
     duration: 1800
   });
   
-/////////////////////////////////////////
-///   END OF OPENING TEXT ANIMATION  //// ***********************************************************************
-////////////////////////////////////////
-
-///////////////////////////////////
-// DROP DOWN OFF OF OPENING TEXT //
-///////////////////////////////////
-
-const dropDownDiv = document.querySelector('div.dropdown-content');
-
-const getDrumkitNames = () => {
-return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
-.then((resp) => {
-      return resp.json()
-}).then((resp) => {
-    let x = 0;
-    dropDownDiv.innerHTML = ""
-     resp.forEach((kit) => {
-      
-           
-           dropDownDiv.innerHTML += `<p class="drum-kit-item"data-id=${x}> ${kit.name} </p>`
-           x++;
-     })
-})
+const getDrumkitList = (listKits, kitId=0) => {
+    drawPads = !listKits
+    return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
+    .then((resp) => {
+        return resp.json()
+            })
+            .then((kits) => {
+                if(listKits){
+                    dropDownDiv.innerHTML = ""
+                    kits.forEach((kit, index) => {
+                        dropDownDiv.innerHTML += `<p class="drum-kit-item"data-id=${index}> ${kit.name} </p>`
+                    })
+                }
+                else if(drawPads){
+                    let soundURLs = kits[kitId].sounds
+                    let padArray = [];
+                    for(let i=0; i<numberOfDrumPads; i++){
+                        padArray.push(soundURLs[i])
+                        padClassTag.innerHTML += `
+                        <div class="box pad-${i+1}">${i+1}
+                        <audio id="audio${i+1}" src="${padArray[i].sound_url}" ></audio>
+                        </div>`
+                    }      
+                }
+        })
 }
-const dropDownTag = document.querySelector('.dropdown-content')
+
+getDrumkitList(true);
+
 dropDownTag.addEventListener('click', (event) => {
     let kitid = event.target.dataset.id
-    fetchByDrop(kitid)
+    let drawPads = false
+    getDrumkitList(drawPads,kitid)
 })
-getDrumkitNames()
-////////////////////////////
-// END OF DROP DOWN LOGIC //
-////////////////////////////
-////////////////////////////////
-//////NEW DB CODE BEGINS
-///////////////////////////////
-const padClassTag = document.querySelector('.pad')
-function fetchByDrop(dropdown) {
-let drumkitURL = "https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits"
-fetch(drumkitURL)
-.then( resp =>  resp.json() )
-.then( kits => {
-    let soundURLs = kits[dropdown].sounds
-   
-      let pad1 = soundURLs[0]
-      let pad2 = soundURLs[1]
-      let pad3 = soundURLs[2]
-      let pad4 = soundURLs[3]
-      let pad5 = soundURLs[4]
-      let pad6 = soundURLs[5]
-      let pad7 = soundURLs[6]
-      let pad8 = soundURLs[7]
-      let padArray = []
-      let x = 1
-      padArray.push(pad1,pad2,pad3,pad4,pad5,pad6,pad7,pad8)
-      padClassTag.innerHTML = ''
-      padArray.forEach((url) => {   
-      padClassTag.innerHTML += `<div class="box pad-${x}">${x}
-     
-      <audio id="audio${x}" src="${url.sound_url}" ></audio>
 
-      </div>`
-      x++ 
-})
-})
-};
+// function fetchByDrop(dropdown) {
+//     let drumkitURL = "https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits"
+//     fetch(drumkitURL)
+//     .then( resp =>  resp.json() )
+//     .then( kits => {
+//         let soundURLs = kits[dropdown].sounds
+//         let padArray = [];
+//         for(let i=0; i<numberOfDrumPads; i++){
+//             padArray.push(soundURLs[i])
+//             padClassTag.innerHTML += `
+//             <div class="box pad-${i+1}">${i+1}
+//             <audio id="audio${i+1}" src="${padArray[i].sound_url}" ></audio>
+//             </div>`
+//         }      
+// })
+// };
 
 
-// fetchByDrop()
 
 
 ///////////////////////////////////////////////
@@ -88,16 +79,7 @@ fetch(drumkitURL)
 
 // Get the modal
 
-const soundModal = document.getElementById('soundModal');
-const kitModal = document.getElementById('kitModal');
 
-// Get the button that opens the modal
-const soundBtn = document.getElementById("addSoundBtn");
-const kitBtn = document.getElementById("createKitBtn");
-
-// Get the <span> element that closes the modal
-const soundSpan = document.getElementById("soundSpan");
-const kitSpan = document.getElementById("kitSpan");
 
 
 
