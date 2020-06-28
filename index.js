@@ -42,16 +42,37 @@ var shaderMaterial = new THREE.PointsMaterial({
   map: tex,
 });
 var partGeom = new THREE.BufferGeometry();
-
+var scene = new THREE.Scene();
 //Create some stars
 for (var i = 0; i < particles; i++) {
-  positionsForStars.push((Math.random() * 2 - 1) * radius);
-}
-partGeom.setAttribute(
-  "position",
-  new THREE.Float32BufferAttribute(positionsForStars, 3)
-);
-var particleSystem = new THREE.Points(partGeom, shaderMaterial);
+    positionsForStars.push((Math.random() * 2 - 1) * radius);
+  }
+  partGeom.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(positionsForStars, 3)
+  );
+  var particleSystem = new THREE.Points(partGeom, shaderMaterial);
+scene.add(particleSystem);
+// PerspectiveCamera( fov : Number, aspect : Number, near : Number, far : Number )
+// fov — Camera frustum vertical field of view.
+// aspect — Camera frustum aspect ratio.
+// near — Camera frustum near plane.
+// far — Camera frustum far plane.
+var camera = new THREE.PerspectiveCamera(
+    75, //fov
+    window.innerWidth / window.innerHeight, //aspect
+    0.1, //near
+    1000 //far
+    );
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+container3d.appendChild(renderer.domElement);
+//Opening camera values
+camera.position.z = -70;
+camera.position.y = 500;
+camera.position.x = 10;
+let controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.maxDistance = 100;
 
 class Sphere {
   constructor(instance, intInd, scene) {
@@ -63,23 +84,6 @@ class Sphere {
     return new this.instance();
   }
 }
-
-var scene = new THREE.Scene();
-// PerspectiveCamera( fov : Number, aspect : Number, near : Number, far : Number )
-// fov — Camera frustum vertical field of view.
-// aspect — Camera frustum aspect ratio.
-// near — Camera frustum near plane.
-// far — Camera frustum far plane.
-var camera = new THREE.PerspectiveCamera(
-                75, //fov
-                window.innerWidth / window.innerHeight, //aspect
-                0.1, //near
-                1000 //far
-                );
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-container3d.appendChild(renderer.domElement);
-
 // https://animejs.com/
 anime.timeline({ loop: false }).add({
   targets: ".ml15 .word",
@@ -271,14 +275,6 @@ function onWindowResize() {
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-
-scene.add(particleSystem);
-//Opening camera values
-camera.position.z = -70;
-camera.position.y = 500;
-camera.position.x = 10;
-let controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.maxDistance = 100;
 
 let createNewSphere = (id) => {
   let illuminate = new Sphere(new THREE.Mesh(geometry, material), id, scene);

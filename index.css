@@ -53,13 +53,6 @@
 
 .modalButton:hover {opacity: 1}
 
-/* ADD SOUND MODAL ENDS HERE */
-
-/* MODAL CSS BEGINS HERE */
-
-/* The Modal (background) */
-
-
 #soundModal, #kitModal {
 
   display: none; /* Hidden by default */
