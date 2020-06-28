@@ -1,4 +1,5 @@
 // OPENING TEXT ANIMATION JS ******************************************************************************
+const numberOfDrumPads = 8;
 
 anime.timeline({loop: false})
   .add({
@@ -6,7 +7,7 @@ anime.timeline({loop: false})
     scale: [14,1],
     opacity: [0,1],
     easing: "easeOutCirc",
-    duration: 800
+    duration: 1800
   });
   
 /////////////////////////////////////////
@@ -29,7 +30,7 @@ return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
      resp.forEach((kit) => {
       
            
-           dropDownDiv.innerHTML += `<p data-id=${x}> ${kit.name} </p>`
+           dropDownDiv.innerHTML += `<p class="drum-kit-item"data-id=${x}> ${kit.name} </p>`
            x++;
      })
 })
@@ -314,25 +315,37 @@ let geometry = new THREE.SphereGeometry(randomIntFromInterval(4,10),randomIntFro
 let material = new THREE.MeshNormalMaterial({wireframe: true})
 
 ///// 8 spheres for each pad
-let sphere1 = new THREE.Mesh(geometry, material)
-scene.add(sphere1)
+class Sphere{
+    constructor(instance, intInd, scene){
+        this.instance = instance
+        this.intInd = intInd
+        this.scene = scene
+    }
+    
+    createMesh(){
+        return new this.instance
+    }
+}
+// newSphere = new Sphere((new THREE.Mesh(geometry, material)), 1, scene)
 
-let sphere2 = new THREE.Mesh(geometry, material)
-scene.add(sphere2)
+// let sphere1 = new THREE.Mesh(geometry, material)
+// scene.add(newSphere.instance)
+// let sphere2 = new THREE.Mesh(geometry, material)
+// scene.add(sphere2)
 
-let sphere3 = new THREE.Mesh(geometry, material)
-scene.add(sphere3)
+// let sphere3 = new THREE.Mesh(geometry, material)
+// scene.add(sphere3)
 
-let sphere4 = new THREE.Mesh(geometry, material)
-scene.add(sphere4)
-let sphere5 = new THREE.Mesh(geometry, material)
-scene.add(sphere5)
-let sphere6 = new THREE.Mesh(geometry, material)
-scene.add(sphere6)
-let sphere7 = new THREE.Mesh(geometry, material)
-scene.add(sphere7)
-let sphere8 = new THREE.Mesh(geometry, material)
-scene.add(sphere8)
+// let sphere4 = new THREE.Mesh(geometry, material)
+// scene.add(sphere4)
+// let sphere5 = new THREE.Mesh(geometry, material)
+// scene.add(sphere5)
+// let sphere6 = new THREE.Mesh(geometry, material)
+// scene.add(sphere6)
+// let sphere7 = new THREE.Mesh(geometry, material)
+// scene.add(sphere7)
+// let sphere8 = new THREE.Mesh(geometry, material)
+// scene.add(sphere8)
 
 //Create some particles
 //////////////////////
@@ -356,45 +369,37 @@ var shaderMaterial = new THREE.PointsMaterial( {
 
 for ( var i = 0; i < particles; i ++ ) {
             positions.push( ( Math.random() * 2 - 1 ) * radius );
-            positions.push( ( Math.random() * 2 - 1 ) * radius );
-            positions.push( ( Math.random() * 2 - 1 ) * radius );
+            // positions.push( ( Math.random() * 2 - 1 ) * radius );
+            // positions.push( ( Math.random() * 2 - 1 ) * radius );
             color.setHSL( i / particles, 1.0, 0.5 );
             colors.push( color.r, color.g, color.b );
-            sizes.push( 200 );
+            //was 200 ??
+            // sizes.push( i * 200 );
         }
 
-partGeom.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-partGeom.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-partGeom.addAttribute( 'size', new THREE.Float32BufferAttribute( sizes, 4 ).setDynamic( true ) );
+partGeom.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+partGeom.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+partGeom.setAttribute( 'size', new THREE.Float32BufferAttribute( sizes, 4 ).setUsage( true ) );
 
 particleSystem = new THREE.Points( partGeom, shaderMaterial );
 scene.add( particleSystem );
-//////////////////////
 
 camera.position.z = -70;
 camera.position.y = 0;
 camera.position.x = 0;
 
-
 let controls = new THREE.OrbitControls(camera, renderer.domElement)
-controls.minDistance = 1
-controls.maxDistance = 1000
-var t1 =0
-var t2 =0
-var t3 =0
-var t4 =0
-var t5 =0
-var t6 =0
-var t7 =0
-var t8 =0
-///////////////////////////
-function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-};
-//////////////////////////
+controls.maxDistance = 100
+
+let createNewSphere = (id)=> {
+    let illuminate = new Sphere((new THREE.Mesh(geometry, material)), id, scene)
+    return illuminate.instance
+}
+for(let i=0; i<numberOfDrumPads; i++){
+    scene.add (createNewSphere(i))
+}
+
 var animate = function () {
-
-
 
     requestAnimationFrame( animate );
 
@@ -402,296 +407,52 @@ while (camera.position.x >= 400 ){
     camera.position.x = -100
 }
 camera.position.x += 0.1
-
-    /////////////////
-    t1 += 0.0052;  
-    sphere1.rotation.x += 0.0001
-    sphere1.rotation.z += 0.002
-    sphere1.position.x = 20*Math.cos(t1) + 0;
-    sphere1.position.z = 20*Math.sin(t1) + 0; // These to strings make it work
-    t2 += -0.0052
-    sphere2.rotation.x += 0.0001
-    sphere2.rotation.z += 0.002
-    sphere2.position.x = 40*Math.cos(t2) + 0;
-    sphere2.position.z = 40*Math.sin(t2) + 0; // These to strings make it work
-    t3 += 0.0059
-    sphere3.rotation.x += 0.0002
-    sphere3.rotation.z += 0.002
-    sphere3.position.x = 10*Math.cos(t3) + 0;
-    sphere3.position.z = 12*Math.sin(t3) + 0; // These to strings make it work
-    t4 += 0.0053
-    sphere4.rotation.x += 0.0001
-    sphere4.rotation.z += 0.002
-    sphere4.position.x = 60*Math.cos(t4) + 0;
-    sphere4.position.z = 20*Math.sin(t4) + 0; // These to strings make it work
-    t5 += -0.0057
-    sphere5.rotation.x += 0.0002
-    sphere5.rotation.z += 0.002
-    sphere5.position.x = 35*Math.cos(t5) + 0;
-    sphere5.position.z = 20*Math.sin(t5) + 0; // These to strings make it work
-    t6 += -0.0055
-    sphere6.rotation.x += 0.0001
-    sphere6.rotation.z += 0.002
-    sphere6.position.x = 50*Math.cos(t6) + 0;
-    sphere6.position.z = 60*Math.sin(t6) + 0; // These to strings make it work
-    t7 += -0.0054
-    sphere7.rotation.x += 0.0002
-    sphere7.rotation.z += 0.002
-    sphere7.position.x = 60*Math.cos(t7) + 0;
-    sphere7.position.z = 80*Math.sin(t7) + 0; // These to strings make it work
-    t8 += -0.0058
-    sphere8.rotation.x += 0.0001
-    sphere8.rotation.z += 0.002
-    sphere8.position.x = 10*Math.cos(t8) + 0;
-    sphere8.position.z = 10*Math.sin(t8) + 0; // These to strings make it work
     
-
-
-        
-
-   
+    /////////////////
+    //This t1 value effects how randomly violent the spheres will be
+    // t1 += 0.0052;  
+    // t1 = Math.random(0.0052,0.0059);
+    for(let i=1; i<numberOfDrumPads-1;i++){
+        let t1 = Math.random(0.0052,0.0053);
+        t1 += i
+    scene.children[i].rotation.x += Math.random(0.0001,0.002);
+    // scene.children[i].rotation.z += 0.002
+    scene.children[i].position.y = 20*Math.cos(t1) + 0;
+    scene.children[i].position.z = 20*Math.sin(t1) + 0;
+    }   
     controls.update()
 
     renderer.render( scene, camera );
 };
 
-
-
-
-
-
-/////////////////////////
-///AUDIO 
-//////////
-
-
-
- function play(value){
+ function playAudioLink(value){
        var audio = document.getElementById(`${value}`);
        audio.play();
                  }
 
-//////////////
-/////END AUDIO
-/////////////////
-var randomScaleValue = getRandomArbitrary(-0.1, 0.1);
-animate()
+animate();
+
 padClassTag.addEventListener('click', (event) => {
     // debugger
-   switch (event.target.innerText) {
-    case '1':
-    console.log("pad 1 pressed")
-    play(event.target.lastElementChild.id)
-   
-    sphere1.scale.x += randomScaleValue
-    sphere1.scale.y += randomScaleValue
-    sphere1.scale.z += randomScaleValue
-    break;
-    case '2':
-    console.log("pad 2 pressed")
-    play(event.target.lastElementChild.id)
-   
-    sphere2.scale.x += randomScaleValue
-    sphere2.scale.y += randomScaleValue
-    sphere2.scale.z += randomScaleValue
-    break;
-    case '3':
-    console.log("pad 3 pressed")
-    play(event.target.lastElementChild.id)
-    
-    sphere3.scale.x += randomScaleValue
-    sphere3.scale.y += randomScaleValue
-    sphere3.scale.z += randomScaleValue
-    break;
-    case '4':
-    console.log("pad 4 pressed")
-    play(event.target.lastElementChild.id)
-   
-    sphere4.scale.x += randomScaleValue
-    sphere4.scale.y += randomScaleValue
-    sphere4.scale.z += randomScaleValue
-    break;
-    case '5':
-    console.log("pad 5 pressed")
-    play(event.target.lastElementChild.id)
-  
-    sphere5.scale.x += randomScaleValue
-    sphere5.scale.y += randomScaleValue
-    sphere5.scale.z += randomScaleValue
-    break;
-    case '6':
-    console.log("pad 6 pressed")
-    play(event.target.lastElementChild.id)
-
-    sphere6.scale.x += randomScaleValue
-    sphere6.scale.y += randomScaleValue
-    sphere6.scale.z += randomScaleValue
-    break;
-    case '7':
-    console.log("pad 7 pressed")
-    play(event.target.lastElementChild.id)
- 
-    sphere7.scale.x += randomScaleValue
-    sphere7.scale.y += randomScaleValue
-    sphere7.scale.z += randomScaleValue
-    break;
-    case '8':
-    console.log("pad 8 pressed")
-    play(event.target.lastElementChild.id)
-
-    sphere8.scale.x += randomScaleValue
-    sphere8.scale.y += randomScaleValue
-    sphere8.scale.z += randomScaleValue
-    break;
-   }
+    let sphereLinkToPad = event.target.innerText
+    let padId = event.target.lastElementChild.id
+    playAudioLink(padId);
+    if(padId === '1' || '2' || '3' || '4' || '5' || '6' || '7' || '8'){
+    scene.children[parseInt(sphereLinkToPad)].scale.x += 0.1;
+    scene.children[parseInt(sphereLinkToPad)].scale.y += 0.1;
+    scene.children[parseInt(sphereLinkToPad)].scale.z += 0.1;
+    }
 })
-//Work on adding key listeners
-
-// pads appear on skin logic end ----
-
-
 
 document.addEventListener('keypress', function (e) {
-    if (e.key === '1') {
-    console.log("1 key pressed")
-    document.querySelector('div.box.pad-1').style.opacity = 1
-    document.getElementById('audio1').load()
-    document.getElementById('audio1').play()
-    
-    sphere1.scale.x += 1
-    sphere1.scale.y += 1
-    sphere1.scale.z += 1
-    }
-    if (e.key === '2') {
-    console.log("2 key pressed")
-    document.querySelector('div.box.pad-2').style.opacity = 1
-    document.getElementById('audio2').load()
-    document.getElementById('audio2').play()
-    
-    sphere2.scale.x += 1
-    sphere2.scale.y += 1
-    sphere2.scale.z += 1
-    }
-    if (e.key === '3') {
-    console.log("3 key pressed")
-    document.querySelector('div.box.pad-3').style.opacity = 1
-    document.getElementById('audio3').load()
-    document.getElementById('audio3').play()
-    
-    sphere3.scale.x += 1
-    sphere3.scale.y += 1
-    sphere3.scale.z += 1
-    }
-        if (e.key === '4') {
-    console.log("4 key pressed")
-    document.querySelector('div.box.pad-4').style.opacity = 1
-    document.getElementById('audio4').load()
-    document.getElementById('audio4').play()
-    
-    sphere4.scale.x += 1
-    sphere4.scale.y += 1
-    sphere4.scale.z += 1
-    }
-        if (e.key === '5') {
-    console.log("5 key pressed")
-    document.querySelector('div.box.pad-5').style.opacity = 1
-    document.getElementById('audio5').load()
-    document.getElementById('audio5').play()
-    
-    sphere5.scale.x += 1
-    sphere5.scale.y += 1
-    sphere5.scale.z += 1
-    }
-        if (e.key === '6') {
-    console.log("6 key pressed")
-    document.querySelector('div.box.pad-6').style.opacity = 1
-    document.getElementById('audio6').load()
-    document.getElementById('audio6').play()
-    
-    sphere6.scale.x += 1
-    sphere6.scale.y += 1
-    sphere6.scale.z += 1
-    }
-        if (e.key === '7') {
-    console.log("7 key pressed")
-    document.querySelector('div.box.pad-7').style.opacity = 1
-    document.getElementById('audio7').load()
-    document.getElementById('audio7').play()
-    
-    sphere7.scale.x += 1
-    sphere7.scale.y += 1
-    sphere7.scale.z += 1
-    }
-        if (e.key === '8') {
-
-    console.log("8 key pressed")
-    document.querySelector('div.box.pad-8').style.opacity = 1
-    document.getElementById('audio8').load()
-    document.getElementById('audio8').play()
-    
-    sphere8.scale.x += 1
-    sphere8.scale.y += 1
-    sphere8.scale.z += 1
+    if (e.key === '1' || '2' || '3' || '4' || '5' || '6' || '7' || '8') {
+        let key = e.key;
+        document.querySelector(`div.box.pad-${key}`).style.opacity = 1
+        document.getElementById(`audio${key}`).load()
+        document.getElementById(`audio${key}`).play()
+        scene.children[key].scale.x += 0.1
+        scene.children[key].scale.y += 0.1
+        scene.children[key].scale.z += 0.1
     }
 
-});
-document.addEventListener("keyup", function(e) {
-      if (e.key === '1') {
-    console.log("1 key release")
-    document.querySelector('div.box.pad-1').style.opacity = ""
-    sphere1.scale.x -= 1
-    sphere1.scale.y -= 1
-    sphere1.scale.z -= 1
-    
-    }
-    if (e.key === '2') {
-    console.log("2 key released")
-    document.querySelector('div.box.pad-2').style.opacity = ""
-    sphere2.scale.x -= 1
-    sphere2.scale.y -= 1
-    sphere2.scale.z -= 1
-    }
-    if (e.key === '3') {
-    console.log("3 key released")
-document.querySelector('div.box.pad-3').style.opacity = ""
-    sphere3.scale.x -= 1
-    sphere3.scale.y -= 1
-    sphere3.scale.z -= 1
-    }
-        if (e.key === '4') {
-    console.log("4 key released")
-document.querySelector('div.box.pad-4').style.opacity = ""
-    sphere4.scale.x -= 1
-    sphere4.scale.y -= 1
-    sphere4.scale.z -= 1
-    }
-        if (e.key === '5') {
-    console.log("5 key released")
-document.querySelector('div.box.pad-5').style.opacity = ""
-    sphere5.scale.x -= 1
-    sphere5.scale.y -= 1
-    sphere5.scale.z -= 1
-    }
-        if (e.key === '6') {
-    console.log("6 key released")
-document.querySelector('div.box.pad-6').style.opacity = ""
-    sphere6.scale.x -= 1
-    sphere6.scale.y -= 1
-    sphere6.scale.z -= 1
-    }
-        if (e.key === '7') {
-    console.log("7 key released")
-document.querySelector('div.box.pad-7').style.opacity = ""
-    sphere7.scale.x -= 1
-    sphere7.scale.y -= 1
-    sphere7.scale.z -= 1
-    }
-        if (e.key === '8') {
-
-    console.log("8 key released")
-document.querySelector('div.box.pad-8').style.opacity = ""
-    sphere8.scale.x -= 1
-    sphere8.scale.y -= 1
-    sphere8.scale.z -= 1
-    }
 });
