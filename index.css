@@ -1,214 +1,58 @@
-/* Opening Text */
-.subtitle{
-  text-shadow: darkolivegreen 3px 2px 1px;
-  font-size: 22%;
-  letter-spacing: 0.15em;
+.container {
+  display: grid;
 }
-.drum-kit-item{
-  letter-spacing: 0.15em;
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -9999;
 }
-.ml15 {
-  
-  font-weight: 800;
-  font-size: 4.0em;
-  left: 10px;
-  color: floralwhite;
+body {
+  margin: 0;
+  padding: 2rem;
+  overflow: hidden;
+  cursor: url(https://static.wixstatic.com/media/6641d6_1d283d1d9756465aa47e4cb5b6539fca~mv2.png),
+    auto;
+  background-color: darkslategrey;
   font-family: Impact, Charcoal, sans-serif;
+  color: floralwhite;
+}
+canvas { width: 100%; height: 100% }
+
+.header-menu {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.title {
+  font-weight: 800;
+  font-size: 4em;
   text-transform: uppercase;
   letter-spacing: 0.4em;
-  position: absolute; 
 }
-
-.ml15 .word {
-  opacity: 0;
-  display: inline-block;
-  line-height: 1em;
+.subtitle {
+  text-shadow: darkolivegreen 3px 2px 1px;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
-
-/* End of Opening Text */
-
-/* ADD SOUND MODAL BEGINS HERE */
-
-#addSoundBtn, #createKitBtn {
-    background-color: #391c14;
-    border: none;
-    color: white;
-    position: absolute;
-    padding: 16px 32px;
-    bottom:0;
-    right:0;
-    text-align: right;
-    font-size: 16px;
-    margin: 4px 2px;
-    opacity: 0.6;
-    transition: 0.3s;
-    display: inline-block;
-    text-decoration: none;
-    cursor: pointer;
+.icon {
+  font-size: 4em;
+  color: antiquewhite;
 }
-
-#createKitBtn {
-    bottom:60px;
-}
-
-.modalButton:hover {opacity: 1}
-
-#soundModal, #kitModal {
-
-  display: none; /* Hidden by default */
-  z-index: 100 !important; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  position: fixed; 
-  top: 50px; left: 50%; transform: translateX(-50%);"
-  align-self: center;
-  align-content: center;
-  width: 70%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-}
-
-#kitModal {
-  top: 175px;
-  height: 400px;
-  overflow-y: scroll;
-}
-
-/* Modal Content */
-#sound-modal-content, #kit-modal-content {
-  color: floralwhite;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  opacity: 0.9;
-  position: relative;
-  background-color: #262424;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 80%;
-  text-align: center;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
-
-/* Add Animation */
-@-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
-  to {top:0; opacity:1}
-}
-
-@keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:0; opacity:1}
-}
-
-/* The Close Button */
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.modal-header {
-  opacity: 0.6;
-  padding: 2px 16px;
-  background-color: #db3d74;
-  color: white;
-}
-
-/* MODAL CSS ENDS HERE! */
-
-
-
-
-body { margin: 0; padding: 0; overflow: hidden;
-cursor: url(https://static.wixstatic.com/media/6641d6_1d283d1d9756465aa47e4cb5b6539fca~mv2.png), auto; }
-canvas { width: 100%; height: 100% }
-.my-skin {
-top: 200px;
-position:relative;
-z-index:1;
-left:10%;
-top:0;
-}
-
-.pad {
-
-  
-  top: 200px;
-  left:30%;
-  position: absolute; 
-  z-index:98;
-  width: 500px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.box {
-  opacity: 0.5;
-   border-radius: 25px;
-  width: 100px;
-  height: 100px;
-  margin: 10px 0;
-  background-color: #444;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.4);
-  user-select: none;
-  transition: all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
-
-  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
-  transform: translateY(0) scale(0.95, 0.95);
-  
-}
-
-.box:hover {
-  opacity: 1}
-
-
-.pad-1, .pad-2, .pad-3, .pad-4  { 
-  border: 2px solid #2ecc71; 
-}
-
-.pad-5, .pad-6, .pad-7, .pad-8 { 
-  border: 2px solid #E5446D; 
-}
-
-/* DROP-DOWN FEATURE BEGINS****************************************************************** */
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  
-  cursor: pointer;
-  flex-wrap: wrap;
+.menu--drop-down {
   display: none;
-  font-size: 0.2em;
-  position: absolute;
-  background-color: rgba(16, 16, 16, 08);
-  min-width: 160px;
+  grid-template-columns: repeat(3, auto);  
+  background-color: rgba(16, 16, 16, 0.6);
   box-shadow: 0px 8px 16px 0px rgba(255, 255, 255, 0.2);
-  padding: 12px 16px;
-  z-index: 1;
 }
-
-.dropdown:hover .dropdown-content {
-  display: block;
+.menu-link-item{
+  flex-grow: 1;
+  letter-spacing: 0.15em;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  margin-left: 0.4rem;
 }
-
-/* DROP-DOWN FEATURE ENDS */

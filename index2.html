@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>DrumMachine</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+  </head>
+  <body>
+    <div class="container" id="3D-container">
+        <div class="header-menu">
+            <h1 class="title">Drum Mash'N</h1>
+            <h4 class="subtitle">WebGL 3D - Use 2 finger on pad to zoom and click drag to look around</h4>
+            <div class="icon" onclick="showDropDownMenu()">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+        <div class="menu--drop-down" id="menu-links">
+
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+    <script src='https://rawgit.com/jeromeetienne/threex.domevents/master/threex.domevents.js'></script>
+    <script src="index.js"></script>
+  </body>
+</html>
