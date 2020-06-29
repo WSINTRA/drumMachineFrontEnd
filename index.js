@@ -1,19 +1,40 @@
-const numberOfDrumPads = 8;
-const dropDownDiv = document.querySelector("div.dropdown-content");
-const dropDownTag = document.querySelector(".dropdown-content");
-const padClassTag = document.querySelector(".pad");
-const soundModal = document.getElementById("soundModal");
-const kitModal = document.getElementById("kitModal");
-const soundBtn = document.getElementById("addSoundBtn");
-const kitBtn = document.getElementById("createKitBtn");
-const soundSpan = document.getElementById("soundSpan");
-const kitSpan = document.getElementById("kitSpan");
-const modalDiv = document.getElementById("sound-modal-content");
-const listOfSounds = document.querySelector(".listOfSounds");
-const drumKitSubmit = document.querySelector("input.submit");
-const container3d = document.querySelector("#container");
+const container3d = document.getElementById("3D-container");
+// https://animejs.com/
+anime.timeline({ loop: false }).add({
+  targets: "#anim-title",
+  scale: [14, 1],
+  opacity: [0, 1],
+  easing: "easeInOutSine",
+  duration: 1800,
+});
 
-//These valus determine sphere Geometry
+const preBuiltDrumKits = [];
+const preSavedSounds = [];
+
+const getDrumkitList = () => {
+  return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
+    .then((resp) => {
+      return resp.json();
+    })
+    .then((kits) => {
+      kits.forEach((kit) => {
+        preBuiltDrumKits.push(kit);
+      });
+    });
+};
+getDrumkitList();
+const getSoundsList = () => {
+    return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/sounds")
+      .then((response) => {
+        return response.json();
+      })
+      .then((res) => {
+       res.forEach(sound=>preSavedSounds.push(sound))
+      });
+  };
+getSoundsList();
+
+const numberOfDrumPads = 8;
 const sphereRadius = 5;
 const widthSegments = 2;
 const heightSegments = 2;
@@ -45,13 +66,13 @@ var partGeom = new THREE.BufferGeometry();
 var scene = new THREE.Scene();
 //Create some stars
 for (var i = 0; i < particles; i++) {
-    positionsForStars.push((Math.random() * 2 - 1) * radius);
-  }
-  partGeom.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positionsForStars, 3)
-  );
-  var particleSystem = new THREE.Points(partGeom, shaderMaterial);
+  positionsForStars.push((Math.random() * 2 - 1) * radius);
+}
+partGeom.setAttribute(
+  "position",
+  new THREE.Float32BufferAttribute(positionsForStars, 3)
+);
+var particleSystem = new THREE.Points(partGeom, shaderMaterial);
 scene.add(particleSystem);
 // PerspectiveCamera( fov : Number, aspect : Number, near : Number, far : Number )
 // fov — Camera frustum vertical field of view.
@@ -59,39 +80,35 @@ scene.add(particleSystem);
 // near — Camera frustum near plane.
 // far — Camera frustum far plane.
 var camera = new THREE.PerspectiveCamera(
-    75, //fov
-    window.innerWidth / window.innerHeight, //aspect
-    0.1, //near
-    1000 //far
-    );
+  75, //fov
+  window.innerWidth / window.innerHeight, //aspect
+  0.1, //near
+  1000 //far
+);
 var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
 container3d.appendChild(renderer.domElement);
-//Opening camera values
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+
 camera.position.z = -70;
 camera.position.y = 500;
 camera.position.x = 10;
 let controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.maxDistance = 100;
+// try {
+
+// } catch (err) {
+//     // alert("This website is made with WebGL that has failed to render, please check your browser settings")
+//   console.log(err);
+// }
+
+//Opening camera values
 
 class Sphere {
-  constructor(instance, intInd, scene) {
+  constructor(instance) {
     this.instance = instance;
-    this.intInd = intInd;
-    this.scene = scene;
-  }
-  createMesh() {
-    return new this.instance();
   }
 }
-// https://animejs.com/
-anime.timeline({ loop: false }).add({
-  targets: ".ml15 .word",
-  scale: [14, 1],
-  opacity: [0, 1],
-  easing: "easeInOutSine",
-  duration: 1800,
-});
 
 const postNewKit = (kitName) => {
   return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits", {
@@ -119,153 +136,6 @@ const addNewSound = (soundUrl) => {
   });
 };
 
-const listSounds = () => {
-  return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/sounds")
-    .then((response) => {
-      return response.json();
-    })
-    .then((res) => {
-      listOfSounds.innerHTML = "<br><br><form>";
-      res.forEach((sound, index) => {
-        let soundID = sound.id;
-        listOfSounds.innerHTML += `<ul>
-            <audio src="${sound.sound_url}" id="${soundID}"></audio>
-            <button onclick="document.getElementById('${soundID}').play()">Preview</button>
-            Sound Number: ${(index + 1).toString()}
-            <input type="checkbox" name="soundSelection" value="${(
-              index + 1
-            ).toString()}" onclick="return ValidateSoundSelection();">
-           <ul>`;
-        //Starts to list links to sound files
-        //TODO: Create a loading bar whilst this fetches
-        console.log(sound.sound_url);
-      });
-    });
-};
-
-const getDrumkitList = (listKits, kitId = 0) => {
-  drawPads = !listKits;
-  return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
-    .then((resp) => {
-      return resp.json();
-    })
-    .then((kits) => {
-      if (listKits) {
-        dropDownDiv.innerHTML = "";
-        kits.forEach((kit, index) => {
-          dropDownDiv.innerHTML += `<p class="drum-kit-item"data-id=${index}> ${kit.name} </p>`;
-        });
-      } else if (drawPads) {
-        let soundURLs = kits[kitId].sounds;
-        let padArray = [];
-        for (let i = 0; i < numberOfDrumPads; i++) {
-          padArray.push(soundURLs[i]);
-          padClassTag.innerHTML += `
-                        <div class="box pad-${i + 1}">${i + 1}
-                        <audio id="audio${i + 1}" src="${
-            padArray[i].sound_url
-          }" ></audio>
-                        </div>`;
-        }
-      }
-    });
-};
-
-getDrumkitList(true);
-
-dropDownTag.addEventListener("click", (event) => {
-  let kitid = event.target.dataset.id;
-  let drawPads = false;
-  getDrumkitList(drawPads, kitid);
-});
-// When the user clicks add sound button, open the modal
-soundBtn.onclick = function () {
-  soundModal.style.display = "block";
-};
-// When the user clicks on <span> (x), close the modal
-soundSpan.onclick = function () {
-  soundModal.style.display = "none";
-};
-// When the user clicks anywhere outside of the modal, close it
-document.onclick = function (event) {
-  if (event.target == soundModal) {
-    soundModal.style.display = "none";
-  }
-};
-kitBtn.onclick = function () {
-  listSounds();
-  kitModal.style.display = "block";
-};
-kitSpan.onclick = function () {
-  kitModal.style.display = "none";
-};
-window.onclick = function (event) {
-  if (event.target == kitModal) {
-    kitModal.style.display = "none";
-  }
-};
-
-modalDiv.addEventListener("click", (event) => {
-  if (event.target.tagName === "BUTTON") {
-    let soundUrl = event.target.parentElement.querySelector("input").value;
-    addNewSound(soundUrl);
-  }
-});
-
-////////////////////////////////
-/////Make sure no more than 8 sounds are selected per drum kit, called from listSound
-//////////////////////////////
-function ValidateSoundSelection() {
-  var checkboxes = document.getElementsByName("soundSelection");
-  var numberOfCheckedItems = 0;
-  for (var i = 0; i < checkboxes.length; i++) {
-    if (checkboxes[i].checked) numberOfCheckedItems++;
-  }
-  if (numberOfCheckedItems > 8) {
-    alert("You can't select more than 8 sounds for your drumKit");
-    return false;
-  }
-}
-
-drumKitSubmit.addEventListener("click", (event) => {
-  let checkboxes = document.getElementsByName("soundSelection");
-  let numberOfCheckedItems = 0;
-  let checkedTrue = [];
-  for (var i = 0; i < checkboxes.length; i++) {
-    if (checkboxes[i].checked) {
-      checkedTrue.push(checkboxes[i]);
-      numberOfCheckedItems++;
-    }
-  }
-  if (checkedTrue.length === 8) {
-    let kitName = document.querySelector("#KitName").value;
-    postNewKit(kitName).then((event) => {
-      let drumKitId = event.id;
-      for (var i = 0; i < checkedTrue.length; i++) {
-        let soundiD = checkedTrue[i].parentElement.firstElementChild.id;
-        fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/kit_sounds", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({ drumkit_id: drumKitId, sound_id: soundiD }),
-        });
-      }
-    });
-    alert("New drum kit created");
-    kitModal.style.display = "none";
-  } else if (checkedTrue.length <= 8) {
-    alert(
-      `You have only selected ${checkedTrue.length} sounds for your drumKit\nPlease select 8`
-    );
-    return false;
-  }
-  getDrumkitList(true);
-});
-
-// ************************************************************************ //
-
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -276,12 +146,13 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-let createNewSphere = (id) => {
-  let illuminate = new Sphere(new THREE.Mesh(geometry, material), id, scene);
+let createNewSphere = () => {
+  let illuminate = new Sphere(new THREE.Mesh(geometry, material));
   return illuminate.instance;
 };
+
 for (let i = 1; i <= numberOfDrumPads; i++) {
-  scene.add(createNewSphere(i));
+  scene.add(createNewSphere());
   scene.children[i].position.y = 20 * Math.cos(i * 360) + 0;
   scene.children[i].position.z = 23 * Math.sin(i * 360) + 0;
 }
@@ -300,34 +171,73 @@ var animate = function () {
   controls.update();
   renderer.render(scene, camera);
 };
-
 animate();
 
 function playAudioLink(value) {
   var audio = document.getElementById(`${value}`);
-  audio.play();
+  try {
+    audio.play();
+  }
+  catch(err){
+    console.log(err)
+  }
 }
 
-padClassTag.addEventListener("click", (event) => {
-  // debugger
-  let sphereLinkToPad = event.target.innerText;
-  let padId = event.target.lastElementChild.id;
-  playAudioLink(padId);
-  if (padId === "1" || "2" || "3" || "4" || "5" || "6" || "7" || "8") {
-    scene.children[parseInt(sphereLinkToPad)].scale.x += randomInt(0, 0.3);
-    scene.children[parseInt(sphereLinkToPad)].scale.y += randomInt(0, 0.3);
-    scene.children[parseInt(sphereLinkToPad)].scale.z += randomInt(0, 0.3);
+function showDrumKit(id){
+    let name = preBuiltDrumKits[id].name
+    let soundsArray = preBuiltDrumKits[id].sounds
+    var x = document.getElementById("menu-links");
+    let length = x.children.length
+    x.innerHTML = createNewKit(name,soundsArray);
+}
+var prevHeading;
+function showDropDownMenu(Heading) {
+  var x = document.getElementById("menu-links");
+  if (Heading === "Drum Kits") {
+    for (let i = 0; i < preBuiltDrumKits.length; i++) {
+      x.innerHTML += `<div class="menu-link-item" onclick="showDrumKit('${i}')">${preBuiltDrumKits[i].name}</div>`;
+    }
   }
-});
+  if (Heading === "Create New Kit") {
+      console.log(preSavedSounds)
+  }
+  if (x.style.display === "grid") {
+    x.style.display = "none";
+    x.previousElementSibling.innerHTML = x.previousElementSibling.innerHTML.replace(
+      `<h4 class="subtitle">${prevHeading}</h4>`,
+      " "
+    );
+    x.innerHTML = ``;
+  } else {
+    x.previousElementSibling.innerHTML += `<h4 class="subtitle">${Heading}</h4>`;
+    x.style.display = "grid";
+  }
+  prevHeading = Heading;
+}
+
+function createNewKit(KitName,kitSounds){
+    let strikePads = ''
+    for(let i=0; i<kitSounds.length;i++ ){
+        strikePads += `<div class="strike-pad" onclick="playAudioLink('${i}')">
+                        <h3>${i+1}</h3>
+                        <audio id="${i}">
+                            <source src="${kitSounds[i].sound_url}" type="audio/mpeg">
+                        </audio> 
+                        </div>`
+    }
+    return `<h1>${KitName}</h1>
+    <div class="drum-pads">
+        ${strikePads}
+    </div>`
+}
 
 document.addEventListener("keypress", function (e) {
-  if (e.key === "1" || "2" || "3" || "4" || "5" || "6" || "7" || "8") {
-    let key = e.key;
-    document.querySelector(`div.box.pad-${key}`).style.opacity = 1;
-    document.getElementById(`audio${key}`).load();
-    document.getElementById(`audio${key}`).play();
-    scene.children[key].scale.x += 0.1;
-    scene.children[key].scale.y += 0.1;
-    scene.children[key].scale.z += 0.1;
-  }
-});
+    if (e.key === "1" || "2" || "3" || "4" || "5" || "6" || "7" || "8") {
+      let key = (e.key - 1);
+      var audio = document.getElementById(`${key}`);
+      audio.play();
+      scene.children[key+1].scale.x += 0.1;
+      scene.children[key+1].scale.y += 0.1;
+      scene.children[key+1].scale.z += 0.1;
+    }
+  });
