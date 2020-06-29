@@ -1,18 +1,38 @@
 const container3d = document.getElementById("3D-container");
-const previousBuiltDrumKits = [];
+// https://animejs.com/
+anime.timeline({ loop: false }).add({
+  targets: "#anim-title",
+  scale: [14, 1],
+  opacity: [0, 1],
+  easing: "easeInOutSine",
+  duration: 1800,
+});
+
+const preBuiltDrumKits = [];
+const preSavedSounds = [];
 
 const getDrumkitList = () => {
-    return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
-      .then((resp) => {
-        return resp.json();
-      })
-      .then((kits) => {
-        kits.forEach(kit=>{
-            previousBuiltDrumKits.push(kit)
-        });
+  return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
+    .then((resp) => {
+      return resp.json();
+    })
+    .then((kits) => {
+      kits.forEach((kit) => {
+        preBuiltDrumKits.push(kit);
+      });
     });
+};
+getDrumkitList();
+const getSoundsList = () => {
+    return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/sounds")
+      .then((response) => {
+        return response.json();
+      })
+      .then((res) => {
+       res.forEach(sound=>preSavedSounds.push(sound))
+      });
   };
-getDrumkitList()
+getSoundsList();
 
 const numberOfDrumPads = 8;
 const sphereRadius = 5;
@@ -70,7 +90,6 @@ container3d.appendChild(renderer.domElement);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-
 camera.position.z = -70;
 camera.position.y = 500;
 camera.position.x = 10;
@@ -90,14 +109,6 @@ class Sphere {
     this.instance = instance;
   }
 }
-// https://animejs.com/
-// anime.timeline({ loop: false }).add({
-//   targets: ".ml15 .word",
-//   scale: [14, 1],
-//   opacity: [0, 1],
-//   easing: "easeInOutSine",
-//   duration: 1800,
-// });
 
 const postNewKit = (kitName) => {
   return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits", {
@@ -164,20 +175,58 @@ animate();
 
 function playAudioLink(value) {
   var audio = document.getElementById(`${value}`);
-  audio.play();
+  try {
+    audio.play();
+  }
+  catch(err){
+    console.log(err)
+  }
 }
 
-function showDropDownMenu() {
+function showDrumKit(id){
+    let name = preBuiltDrumKits[id].name
+    let soundsArray = preBuiltDrumKits[id].sounds
     var x = document.getElementById("menu-links");
-    for(let i=0; i<previousBuiltDrumKits.length;i++){
-          x.innerHTML += `<div class="menu-link-item">${previousBuiltDrumKits[i].name}</div>`
-      }
-    if (x.style.display === "grid") {
-      x.style.display = "none";
-      x.previousElementSibling.innerHTML = x.previousElementSibling.innerHTML.replace('<h4 class="subtitle">Drum Kits</h4>' , " ");
-      x.innerHTML = ``
-    } else {
-      x.previousElementSibling.innerHTML += '<h4 class="subtitle">Drum Kits</h4>'
-      x.style.display = "grid";
+    let length = x.children.length
+    x.innerHTML = createNewKit(name,soundsArray);
+}
+var prevHeading;
+function showDropDownMenu(Heading) {
+  var x = document.getElementById("menu-links");
+  if (Heading === "Drum Kits") {
+    for (let i = 0; i < preBuiltDrumKits.length; i++) {
+      x.innerHTML += `<div class="menu-link-item" onclick="showDrumKit('${i}')">${preBuiltDrumKits[i].name}</div>`;
     }
   }
+  if (Heading === "Create New Kit") {
+      console.log(preSavedSounds)
+  }
+  if (x.style.display === "grid") {
+    x.style.display = "none";
+    x.previousElementSibling.innerHTML = x.previousElementSibling.innerHTML.replace(
+      `<h4 class="subtitle">${prevHeading}</h4>`,
+      " "
+    );
+    x.innerHTML = ``;
+  } else {
+    x.previousElementSibling.innerHTML += `<h4 class="subtitle">${Heading}</h4>`;
+    x.style.display = "grid";
+  }
+  prevHeading = Heading;
+}
+//To create a kit I need all the sounds 
+function createNewKit(KitName,kitSounds){
+    let strikePads = ''
+    for(let i=0; i<kitSounds.length;i++ ){
+        strikePads += `<div class="strike-pad" onclick="playAudioLink('${i}')">
+                        <audio id="${i}">
+                            <source src="${kitSounds[i].sound_url}" type="audio/mpeg">
+                        </audio> 
+                        </div>`
+    }
+    return `<h1>${KitName}</h1>
+    <div class="drum-pads">
+        ${strikePads}
+    </div>`
+}
+

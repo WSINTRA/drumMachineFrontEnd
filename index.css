@@ -12,7 +12,7 @@ canvas {
 }
 body {
   margin: 0;
-  padding: 2rem;
+  padding: 0;
   overflow: hidden;
   cursor: url(https://static.wixstatic.com/media/6641d6_1d283d1d9756465aa47e4cb5b6539fca~mv2.png),
     auto;
@@ -20,14 +20,18 @@ body {
   font-family: Impact, Charcoal, sans-serif;
   color: floralwhite;
 }
-canvas { width: 100%; height: 100% }
+canvas {
+  width: 100%;
+  height: 100%;
+}
 
 .header-menu {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
 }
 .title {
+  opacity: 0;
   font-weight: 800;
   font-size: 4em;
   text-transform: uppercase;
@@ -40,19 +44,69 @@ canvas { width: 100%; height: 100% }
   text-transform: uppercase;
 }
 .icon {
-  font-size: 4em;
+  font-size: 2rem;
   color: antiquewhite;
+}
+.icon:hover {
+  color: rgba(134, 88, 88, 0.521);
 }
 .menu--drop-down {
   display: none;
-  grid-template-columns: repeat(3, auto);  
+  grid-template-columns: repeat(3, auto);
   background-color: rgba(16, 16, 16, 0.6);
   box-shadow: 0px 8px 16px 0px rgba(255, 255, 255, 0.2);
+  padding: 1rem;
 }
-.menu-link-item{
+.menu-link-item {
   flex-grow: 1;
   letter-spacing: 0.15em;
   margin-top: 0.4rem;
   margin-bottom: 0.4rem;
   margin-left: 0.4rem;
+}
+.drum-pads {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+}
+.strike-pad {
+  margin: 1.2rem;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 3rem;
+  /* background-color: blueviolet; */
+  background: radial-gradient(circle, 
+  rgba(117,9,121,1) 3%,
+   rgba(41,179,60,1) 21%, 
+   rgba(98,235,14,1) 27%,
+    rgba(72,150,148,1) 45%, 
+    rgba(74,107,164,1) 60%,
+     rgba(108,128,75,1) 72%,
+      rgba(255,0,0,1) 100%);
+}
+.strike-pad:hover {
+  opacity: 0.5;
+}
+@media only screen and (max-width: 600px) {
+  body {
+    overflow: auto;
+  }
+  .header-menu {
+    flex-direction: column;
+  }
+  .title,
+  .icon {
+    font-size: 2rem;
+  }
+  .drum-pads {
+    justify-content: center;
+    grid-template-columns: repeat(2, auto);
+    /* position: absolute;
+    left: 0rem;
+    top: 20rem;
+    margin: 0 auto;  */
+  }
+  .menu--drop-down {
+    grid-template-columns: none;
+    grid-auto-flow: row;
+  }
 }
