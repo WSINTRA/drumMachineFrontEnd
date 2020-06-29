@@ -1,4 +1,5 @@
 const container3d = document.getElementById("3D-container");
+
 // https://animejs.com/
 anime.timeline({ loop: false }).add({
   targets: "#anim-title",
@@ -277,9 +278,13 @@ const pushNewPadToTemp=()=>{
     if (newPadsArray.length < 8){
     newPadsArray.push( {'title':kitTitle,'sound':preSavedSounds[id]} )
     //When new pad is added, render a small pad on screen to represent it
-    console.log(newPadsArray);
-   
-        drawTempPad(newPadsArray);
+      drawTempPad(newPadsArray);
+      if(newPadsArray.length == 8){
+        let tempKit = document.getElementById("temp-kit");
+        tempKit.innerHTML += `<div class="icon" onclick="console.log('Save-kit')">
+        <h4 style="padding: 1rem;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Save Kit</h4>
+      </div> `
+      }
     }
     
 }
@@ -307,7 +312,10 @@ function componentToAddNewKit(preSavedSounds) {
     <select class="form-control" id="selected-sound">
       ${createOptionsFromList()}
     </select>
-    <div onclick="playAudio()">Preview sound</audio>
+    
+    <div class="icon" onclick="playAudio()">
+    <i class="fa fa-play" aria-hidden="true"></i>
+    Preview sound
   </div>
   <div class="icon" onclick="pushNewPadToTemp()">
   <h4 style="padding: 1rem;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Add Sound to Pad</h4>
