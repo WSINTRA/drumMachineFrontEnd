@@ -214,11 +214,12 @@ function showDropDownMenu(Heading) {
   }
   prevHeading = Heading;
 }
-//To create a kit I need all the sounds 
+
 function createNewKit(KitName,kitSounds){
     let strikePads = ''
     for(let i=0; i<kitSounds.length;i++ ){
         strikePads += `<div class="strike-pad" onclick="playAudioLink('${i}')">
+                        <h3>${i+1}</h3>
                         <audio id="${i}">
                             <source src="${kitSounds[i].sound_url}" type="audio/mpeg">
                         </audio> 
@@ -230,3 +231,13 @@ function createNewKit(KitName,kitSounds){
     </div>`
 }
 
+document.addEventListener("keypress", function (e) {
+    if (e.key === "1" || "2" || "3" || "4" || "5" || "6" || "7" || "8") {
+      let key = (e.key - 1);
+      var audio = document.getElementById(`${key}`);
+      audio.play();
+      scene.children[key+1].scale.x += 0.1;
+      scene.children[key+1].scale.y += 0.1;
+      scene.children[key+1].scale.z += 0.1;
+    }
+  });
