@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DrumMachine</title>
+    <link rel="stylesheet" type="text/css" href="indexCss_backup.css">
+  </head>
+  <body>
+    <div class="container" id="3D-container">
+      
+      <!-- dropdown option -->
+      
+      <!-- WELCOMING TEXT ANIMATION -->
+      <h1 class="ml15">
+      <div class="dropdown">
+        <span class="word">DRUM</span>
+        <span class="word">MASH'N</span><h4 class="subtitle">Hover title to get started! - Use 2 finger on pad to zoom and click drag to look around</h4>
+        <div class="dropdown-content">
+          <!-- each selection option for kits -->
+        </div>
+      </div>
+      </h1>
+      <!-- WELCOMING TEXT ANIMATION END-->
+      <!-- end of dropdown option -->
+    <!-- ADD SOUNDS HERE -->
+    <!-- Trigger/Open The Modal -->
+    <button id='addSoundBtn' class="modalButton">ADD SOUND</button>
+    <!-- The Modal -->
+    <div id="soundModal">
+      <div id="sound-modal-content">
+        <div class="modal-header">
+          <span id='soundSpan' class="close">&times;</span>
+        </div>
+        
+        <form id="new-sound-form">
+          <h3 class='modal-header-font'>Please Provide a Valid Sound URL</h3>
+          
+          <div class="sound-section-div">
+            Sound Url: <input class='sound-url-font' type='text' style="width: 300px";>
+          </div>
+          <br>
+          <button class="add-sound-button-final">Add Sound</button>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE SOUNDS HERE -->
+    <!-- CREATE KIT BUTTON/MODAL SECTION -->
+    <button id='createKitBtn' class="modalButton">CREATE KIT</button>
+    <!-- The Modal -->
+    <div id="kitModal">
+
+      <div id="kit-modal-content">
+
+        <div class="modal-header">
+          <span id='kitSpan' class="close">&times;</span>
+        </div>
+
+        <form class="add-drumkit-form" onsubmit="return false">
+          <div class='listOfSounds'>
+            <!-- list of all sounds here -->
+          </div>
+          Kit Name:
+          <input type="text" id="KitName">
+          <input type="submit" value="Submit now" class="submit"> 
+        </form>
+
+      </div>
+
+    </div>
+    <!-- CREATE KIT BUTTON/MODAL SECTION ENDS HERE -->
+    <div class="my-skin">
+    <div class="pad">
+      <!-- this div consists of all the pad tags -->
+    </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+    <script src='https://rawgit.com/jeromeetienne/threex.domevents/master/threex.domevents.js'></script>
+    <script src="index.js"></script>
+  </body>
+</html>

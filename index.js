@@ -10,7 +10,7 @@ anime.timeline({ loop: false }).add({
 
 const preBuiltDrumKits = [];
 const preSavedSounds = [];
-
+const newPadsArray = [];
 const getDrumkitList = () => {
   return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
     .then((resp) => {
@@ -24,14 +24,14 @@ const getDrumkitList = () => {
 };
 getDrumkitList();
 const getSoundsList = () => {
-    return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/sounds")
-      .then((response) => {
-        return response.json();
-      })
-      .then((res) => {
-       res.forEach(sound=>preSavedSounds.push(sound))
-      });
-  };
+  return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/sounds")
+    .then((response) => {
+      return response.json();
+    })
+    .then((res) => {
+      res.forEach((sound) => preSavedSounds.push(sound));
+    });
+};
 getSoundsList();
 
 const numberOfDrumPads = 8;
@@ -110,6 +110,16 @@ class Sphere {
   }
 }
 
+class drumKit {
+    constructor(kitTitle, kitSounds){
+        this.kitTitle = kitTitle;
+        this.kitSounds = kitSounds;
+    }
+    push(sound){
+        this.kitSounds.push(sound)
+    }
+}
+
 const postNewKit = (kitName) => {
   return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits", {
     method: "POST",
@@ -177,19 +187,19 @@ function playAudioLink(value) {
   var audio = document.getElementById(`${value}`);
   try {
     audio.play();
-  }
-  catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
 }
 
-function showDrumKit(id){
-    let name = preBuiltDrumKits[id].name
-    let soundsArray = preBuiltDrumKits[id].sounds
-    var x = document.getElementById("menu-links");
-    let length = x.children.length
-    x.innerHTML = createNewKit(name,soundsArray);
+function showDrumKit(id) {
+  let name = preBuiltDrumKits[id].name;
+  let soundsArray = preBuiltDrumKits[id].sounds;
+  var x = document.getElementById("menu-links");
+  let length = x.children.length;
+  x.innerHTML = createNewKit(name, soundsArray);
 }
+
 var prevHeading;
 function showDropDownMenu(Heading) {
   var x = document.getElementById("menu-links");
@@ -199,7 +209,8 @@ function showDropDownMenu(Heading) {
     }
   }
   if (Heading === "Create New Kit") {
-      console.log(preSavedSounds)
+    console.log(preSavedSounds);
+    x.innerHTML = componentToAddNewKit(preSavedSounds);
   }
   if (x.style.display === "grid") {
     x.style.display = "none";
@@ -215,29 +226,93 @@ function showDropDownMenu(Heading) {
   prevHeading = Heading;
 }
 
-function createNewKit(KitName,kitSounds){
-    let strikePads = ''
-    for(let i=0; i<kitSounds.length;i++ ){
-        strikePads += `<div class="strike-pad" onclick="playAudioLink('${i}')">
-                        <h3>${i+1}</h3>
+function createNewKit(KitName, kitSounds) {
+  let strikePads = "";
+  for (let i = 0; i < kitSounds.length; i++) {
+    strikePads += `<div class="strike-pad" onclick="playAudioLink('${i}')">
+                        <h3>${i + 1}</h3>
                         <audio id="${i}">
-                            <source src="${kitSounds[i].sound_url}" type="audio/mpeg">
+                            <source src="${
+                              kitSounds[i].sound_url
+                            }" type="audio/mpeg">
                         </audio> 
-                        </div>`
-    }
-    return `<h1>${KitName}</h1>
+                        </div>`;
+  }
+  return `<h1>${KitName}</h1>
     <div class="drum-pads">
         ${strikePads}
-    </div>`
+    </div>`;
 }
 
 document.addEventListener("keypress", function (e) {
-    if (e.key === "1" || "2" || "3" || "4" || "5" || "6" || "7" || "8") {
-      let key = (e.key - 1);
-      var audio = document.getElementById(`${key}`);
-      audio.play();
-      scene.children[key+1].scale.x += 0.1;
-      scene.children[key+1].scale.y += 0.1;
-      scene.children[key+1].scale.z += 0.1;
+  if (e.key === "1" || "2" || "3" || "4" || "5" || "6" || "7" || "8") {
+    let key = e.key - 1;
+    var audio = document.getElementById(`${key}`);
+    audio.play();
+    scene.children[key + 1].scale.x += 0.1;
+    scene.children[key + 1].scale.y += 0.1;
+    scene.children[key + 1].scale.z += 0.1;
+  }
+});
+
+//This function for preview in dropDown
+const playAudio = () => {
+  let id = document.getElementById("selected-sound").value;
+  let url = preSavedSounds[id].sound_url;
+  new Audio(url).play();
+};
+
+const drawTempPad=(newPadsArray)=>{
+    let tempKit = document.getElementById("temp-kit");
+    let sounds = []
+    newPadsArray.forEach(pad=>{
+       sounds.push(pad.sound)
+    })
+    let kitName = newPadsArray[0].title
+    tempKit.innerHTML = createNewKit(kitName, sounds);
+}
+const pushNewPadToTemp=()=>{
+    let id = document.getElementById("selected-sound").value;
+    let kitTitle = document.getElementById('drum-kit-title').value;
+    if (newPadsArray.length < 8){
+    newPadsArray.push( {'title':kitTitle,'sound':preSavedSounds[id]} )
+    //When new pad is added, render a small pad on screen to represent it
+    console.log(newPadsArray);
+   
+        drawTempPad(newPadsArray);
     }
-  });
+    
+}
+
+function componentToAddNewKit(preSavedSounds) {
+  const createOptionsFromList = () => {
+    let optionString = "";
+    preSavedSounds.forEach(
+      (sound,index) =>
+        (optionString += `<option value='${
+          index
+        }'>${faker.random.word()}</option>`)
+    );
+    return optionString;
+  };
+  //lists the current sounds, so far 60 sound files
+  //Best way to arrange them is in a library
+  //That requires some sort of ordering
+  const component = `<form class="form-newkit"><div class="form-group">
+    <label for="drum-kit-title">Kit Title</label>
+    <input type="text" class="form-control" id="drum-kit-title" placeholder="Your new kit">
+  </div>
+  <div class="form-group">
+    <label for="selected-sound">Sound select</label>
+    <select class="form-control" id="selected-sound">
+      ${createOptionsFromList()}
+    </select>
+    <div onclick="playAudio()">Preview sound</audio>
+  </div>
+  <div class="icon" onclick="pushNewPadToTemp()">
+  <h4 style="padding: 1rem;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Add Sound to Pad</h4>
+</div>  
+</form>
+</div></form><div class="temp-pads" id="temp-kit"></div>`;
+  return component;
+}
