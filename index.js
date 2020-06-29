@@ -8,11 +8,12 @@ anime.timeline({ loop: false }).add({
   easing: "easeInOutSine",
   duration: 1800,
 });
-
-const preBuiltDrumKits = [];
 const preSavedSounds = [];
-const newPadsArray = [];
+let preBuiltDrumKits = [];
+let newPadsArray = [];
+
 const getDrumkitList = () => {
+  preBuiltDrumKits = [];
   return fetch(`https://infinite-tundra-44498.herokuapp.com/api/v1/drumkits`)
     .then((resp) => {
       return resp.json();
@@ -23,7 +24,9 @@ const getDrumkitList = () => {
       });
     });
 };
-getDrumkitList();
+//Initial fetch of all kits, fills preBuiltDrumKits array
+getDrumkitList()
+
 const getSoundsList = () => {
   return fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/sounds")
     .then((response) => {
@@ -205,12 +208,14 @@ var prevHeading;
 function showDropDownMenu(Heading) {
   var x = document.getElementById("menu-links");
   if (Heading === "Drum Kits") {
+    console.log(preBuiltDrumKits)
     for (let i = 0; i < preBuiltDrumKits.length; i++) {
       x.innerHTML += `<div class="menu-link-item" onclick="showDrumKit('${i}')">${preBuiltDrumKits[i].name}</div>`;
     }
   }
   if (Heading === "Create New Kit") {
-    console.log(preSavedSounds);
+    newPadsArray = [];
+    console.log(preSavedSounds, newPadsArray);
     x.innerHTML = componentToAddNewKit(preSavedSounds);
   }
   if (x.style.display === "grid") {
@@ -269,19 +274,47 @@ const drawTempPad=(newPadsArray)=>{
     newPadsArray.forEach(pad=>{
        sounds.push(pad.sound)
     })
-    let kitName = newPadsArray[0].title
-    tempKit.innerHTML = createNewKit(kitName, sounds);
+    let kitTitle = document.getElementById('drum-kit-title').value;
+    tempKit.innerHTML = createNewKit(kitTitle, sounds);
 }
+const saveNewKitToDB=()=>{
+    let kitTitle = document.getElementById('drum-kit-title').value;
+    if(!kitTitle.length >0 ){
+        alert("Your kit must have a title, try again")
+        return null
+    }
+    //Here we go,
+    postNewKit(kitTitle).then((newKit) => {
+        let drumKitId = newKit.id;
+        
+        for (var i = 0; i < newPadsArray.length; i++) {
+          let soundID = newPadsArray[i].sound.id
+          fetch("https://infinite-tundra-44498.herokuapp.com/api/v1/kit_sounds", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({ drumkit_id: drumKitId, sound_id: soundID }),
+          }).then(res=>res.json())
+        }
+      })
+          //For now just alert the return
+          //TODO: Error check and confirm
+          .then(newKit=>alert("kit added"))
+          //reset the array and repopulate
+          .then(()=>getDrumkitList());
+}
+
 const pushNewPadToTemp=()=>{
     let id = document.getElementById("selected-sound").value;
-    let kitTitle = document.getElementById('drum-kit-title').value;
     if (newPadsArray.length < 8){
-    newPadsArray.push( {'title':kitTitle,'sound':preSavedSounds[id]} )
+    newPadsArray.push( {'sound':preSavedSounds[id]} )
     //When new pad is added, render a small pad on screen to represent it
       drawTempPad(newPadsArray);
       if(newPadsArray.length == 8){
         let tempKit = document.getElementById("temp-kit");
-        tempKit.innerHTML += `<div class="icon" onclick="console.log('Save-kit')">
+        tempKit.innerHTML += `<div class="icon" onclick="saveNewKitToDB()">
         <h4 style="padding: 1rem;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Save Kit</h4>
       </div> `
       }
